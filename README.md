@@ -4,11 +4,11 @@ A terminal Python script that fetches Pointercrate demonlist info.
 # COMPILING WITH PYINSTALLER
 Dependancies you need:
 
-[pointercratepy]https://pypi.org/project/pointercratepy/
+[pointercratepy](https://pypi.org/project/pointercratepy/)
 
 `pip install pointercratepy`
 
-[colorama]https://pypi.org/project/colorama/
+[colorama](https://pypi.org/project/colorama/)
 
 `pip install colorama`
 
