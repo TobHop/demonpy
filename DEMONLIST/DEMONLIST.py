@@ -47,9 +47,9 @@ def clear_console():
 
 def mainline():
     clear_console()
-    print("---PYDEMON POINTERCRATE DEMON LIST v1.0---")
-    print(Fore.CYAN + "1 - Fetch Lists (Main, Extended)...")
-    print(Fore.CYAN + "2 - Get Info On A Demon (Main, Extended)...")
+    print("---PYDEMON POINTERCRATE DEMON LIST v2.0---")
+    print(Fore.CYAN + "1 - Fetch Lists (Main, Extended, Legacy)...")
+    print(Fore.CYAN + "2 - Get Info On A Demon (Main, Extended, Legacy)...")
     print(Fore.CYAN + "3 - CREDITS!...")
 
     choice = int(input("What Would You Like Me To Do?... "))
@@ -58,6 +58,7 @@ def mainline():
      print("---LISTS---")
      print(Fore.CYAN + "1 - Main List (1-75)...")
      print(Fore.CYAN + "2 - Extended List (76-150)...")
+     print(Fore.CYAN + "3 - Legacy List (151-600)...")
      listchoice = int(input("What List Would You Like To Fetch?... "))
      if listchoice == 1:
          print(Fore.YELLOW + "Fetching From Pointercrate API... May Take A While If Pointercrate Is Experiencing High Traffic...")
@@ -68,7 +69,14 @@ def mainline():
      if listchoice == 2:
          print(Fore.YELLOW + "Fetching From Pointercrate API... May Take A While If Pointercrate Is Experiencing High Traffic...")
          fetchextendedlist()
-         print(Fore.RED + "(Scoll To Top For Top 1!)")
+         print(Fore.RED + "(Scoll To Top For Top 76!)")
+         input("Press Enter To Return To The Main Menu...")
+         mainline()
+     if listchoice == 3:
+         print(Fore.YELLOW + "Fetching From Pointercrate API... May Take A While If Pointercrate Is Experiencing High Traffic...")
+         print(Fore.RED + "This takes longer because it fetches the demons in multiple requests...")
+         fetchlegacylist()
+         print(Fore.RED + "(Scoll To Top For Top 151!)")
          input("Press Enter To Return To The Main Menu...")
          mainline()
      else:
@@ -81,6 +89,7 @@ def mainline():
      print("---LISTS---")
      print(Fore.CYAN + "1 - Main List (1-75)...")
      print(Fore.CYAN + "2 - Extended List (76-150)...")
+     print(Fore.CYAN + "3 - Legacy List (151+)...")
      listchoice = int(input("Which List Would You Like To Search?... "))
      if listchoice == 1:
          print(Fore.YELLOW + "Fetching From Pointercrate API... May Take A While If Pointercrate Is Experiencing High Traffic...")
@@ -88,6 +97,9 @@ def mainline():
      if listchoice == 2:
          print(Fore.YELLOW + "Fetching From Pointercrate API... May Take A While If Pointercrate Is Experiencing High Traffic...")
          extendedinfofetch()
+     if listchoice == 3:
+         print(Fore.YELLOW + "Fetching From Pointercrate API... May Take A While If Pointercrate Is Experiencing High Traffic...")
+         legacyfetch()
      else:
          print(Fore.RED + "Please Enter A Valid List Option... ")
          input(Fore.CYAN + "Press Enter To Return To The Main Menu.. ")
@@ -177,6 +189,60 @@ def extendedinfofetch():
             input("Press Enter To Return To The Menu... ")
             mainline()
 
+def legacyfetch():
+    clear_console()
+    listno = int(input("Enter An LEGACY List Number. 151+... ")) - 151
+    if listno < 0 or listno > 600:
+        print(Fore.RED + "Please enter a valid LEGACY list position.")
+        input("Press Enter to return to the main menu...")
+
+        mainline()
+    else:
+         print(Fore.YELLOW + "Fetching From Pointercrate API... May Take A While If Pointercrate Is Experiencing High Traffic...")
+         print(Fore.RED + "This takes longer because it fetches the demons in multiple requests...")
+
+         from pointercratepy import Client
+
+         client = Client()
+
+         legacybatch1 = client.get_demons(limit=100, after=150)
+
+         demons = legacybatch1
+
+         legacybatch2 = client.get_demons(limit=100, after=250)
+
+         demons = legacybatch1 + legacybatch2
+
+         legacybatch3 = client.get_demons(limit=100, after=350)
+
+         demons = legacybatch1 + legacybatch2 + legacybatch3
+
+         legacybatch4 = client.get_demons(limit=100, after=450)
+
+         demons = legacybatch1 + legacybatch2 + legacybatch3 + legacybatch4
+
+         legacybatch5 = client.get_demons(limit=50, after=550)
+
+         demons = legacybatch1 + legacybatch2 + legacybatch3 + legacybatch4 + legacybatch5
+
+
+         clear_console()
+
+         print(f"---{demons[listno].get('name')} Info---")
+         print(Fore.CYAN + "Name: " + demons[listno].get("name"))
+         print(Fore.YELLOW + "Publisher: " +  demons[listno].get("publisher", {}).get("name"))
+         print(Fore.CYAN + "Verifier: " +  demons[listno].get("verifier", {}).get("name"))
+         print(Fore.CYAN + "Position: " + str(demons[listno].get("position")))
+         print(Fore.GREEN + "Showcase: " +  demons[listno].get("video"))
+         openshow = input("Would you like to open the showcase in your preferred browser? (Y/N) ")
+         if openshow == "y":
+            webbrowser.open(demons[listno].get("video"))
+         elif openshow == "n":
+            input("Press Enter To Return To The Menu... ")
+            mainline()
+
+
+
 
 
 def fetchmainlist():
@@ -203,9 +269,39 @@ def fetchextendedlist():
  print("---The Extended List As Of " + str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S---")))
 
  for i, demons in enumerate(demons, start=76):
-     print(Fore.W + f"{i}. {demons.get('name')}" + Fore.CYAN + " - Published By: " + Fore.CYAN + demons.get("publisher", {}).get("name"))
+     print(Fore.WHITE + f"{i}. {demons.get('name')}" + Fore.CYAN + " - Published By: " + Fore.CYAN + demons.get("publisher", {}).get("name"))
 
+def fetchlegacylist():
+ from pointercratepy import Client
 
+ client = Client()
+
+ legacybatch1 = client.get_demons(limit=100, after=150)
+
+ demons = legacybatch1
+
+ legacybatch2 = client.get_demons(limit=100, after=250)
+
+ demons = legacybatch1 + legacybatch2
+
+ legacybatch3 = client.get_demons(limit=100, after=350)
+
+ demons = legacybatch1 + legacybatch2 + legacybatch3
+
+ legacybatch4 = client.get_demons(limit=100, after=450)
+
+ demons = legacybatch1 + legacybatch2 + legacybatch3 + legacybatch4
+
+ legacybatch5 = client.get_demons(limit=50, after=550)
+
+ demons = legacybatch1 + legacybatch2 + legacybatch3 + legacybatch4 + legacybatch5
+
+ clear_console()
+
+ print("---The Legacy List As Of " + str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S---")))
+
+ for i, demons in enumerate(demons, start=151):
+     print(Fore.WHITE + f"{i}. {demons.get('name')}" + Fore.CYAN + " - Published By: " + Fore.CYAN + demons.get("publisher", {}).get("name"))
 
 
 mainline()
